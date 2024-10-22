@@ -1,28 +1,8 @@
-import json
-import requests
+import data_fetcher
 
-api_key = 'wm7dAuEaYpR3+Yck/Pz1/Q==GbXw4cWRi3NwahkI'
 
 animal_name = input("Enter an animal: ")
-
-url = f'https://api.api-ninjas.com/v1/animals?name={animal_name}'
-
-headers = {
-    "X-Api-Key": api_key
-}
-
-response = requests.get(url, headers=headers)
-
-if response.status_code == 200:
-    animals = response.json()
-    if animals:
-        print("Data fetched successfully from API")
-    else:
-        print("No data found for the given animal.")
-else:
-    print(f"Failed to retrieve data from API. Status code: {response.status_code}")
-    exit()
-
+animals = data_fetcher.fetch_data(animal_name)
 
 with open('animals_template.html', 'r') as file:
     content = file.read()
@@ -48,13 +28,17 @@ def serialize_animal(animal_obj):
     '''
 
 
-animals_info = ''
-for animal_obj in animals:
-    animals_info += serialize_animal(animal_obj)
+if animals:
+    animals_info = ''
+    for animal_obj in animals:
+        animals_info += serialize_animal(animal_obj)
+else:
+    animals_info = f'<h2>The animal "{animal_name}" doesn\'t exist.</h2>'
 
 final_html = content.replace("__REPLACE_ANIMALS_INFO__", animals_info)
 
-with open("animals_web_api.html", "w") as output_file:
+with open("animals.html", "w") as output_file:
     output_file.write(final_html)
 
 print("HTML file generated successfully.")
+
