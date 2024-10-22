@@ -1,6 +1,5 @@
 import data_fetcher
 
-
 animal_name = input("Enter an animal: ")
 animals = data_fetcher.fetch_data(animal_name)
 
